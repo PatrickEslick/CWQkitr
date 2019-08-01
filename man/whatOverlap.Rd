@@ -17,7 +17,7 @@ whatOverlap(start1, end1, start2, end2)
 }
 \value{
 a vector of length 2 giving the start and end of the overlap
-between the two intevals
+between the two intervals
 }
 \description{
 Find the overlap of two overlapping intervals

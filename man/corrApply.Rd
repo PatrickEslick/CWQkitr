@@ -2,9 +2,9 @@
 % Please edit documentation in R/corrections_grades_gaps.R
 \name{corrApply}
 \alias{corrApply}
-\title{Create a data frame of raw time series data with corrections annotated}
+\title{Create a data frame of time series data with details on corrections}
 \usage{
-corrApply(tsID, startDate, endDate)
+corrApply(tsID, start, end)
 }
 \arguments{
 \item{tsID}{the time series unique identifier}
@@ -13,6 +13,10 @@ corrApply(tsID, startDate, endDate)
 
 \item{endDate}{the end date of interest as a string in the form YYYY-MM-DD}
 }
+\value{
+a data frame of time series data. The value of all fouling
+and drift corrections is shown for each point in the time series.
+}
 \description{
-Create a data frame of raw time series data with corrections annotated
+Create a data frame of time series data with details on corrections
 }

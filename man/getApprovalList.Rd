@@ -4,10 +4,10 @@
 \alias{getApprovalList}
 \title{Get a list of approval transactions}
 \usage{
-getApprovalList(timeSeriesID, start, end)
+getApprovalList(tsID, start, end)
 }
 \arguments{
-\item{timeSeriesID}{the time series unique identifier}
+\item{tsID}{the time series unique identifier}
 
 \item{start}{the starting date of interest, as a string in the form YYYY-MM-DD}
 

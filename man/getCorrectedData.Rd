@@ -11,7 +11,7 @@ getCorrectedData(tsID, start, end)
 
 \item{start}{the starting date of interest as a string in the form YYYY-MM-DD}
 
-\item{end}{the ending date of itnerest as a string in the form YYYY-MM-DD}
+\item{end}{the ending date of interest as a string in the form YYYY-MM-DD}
 }
 \value{
 a data frame of corrected data for the time series. If no data is

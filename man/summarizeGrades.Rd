@@ -2,13 +2,17 @@
 % Please edit documentation in R/corrections_grades_gaps.R
 \name{summarizeGrades}
 \alias{summarizeGrades}
-\title{Summarize grades from the complete table}
+\title{Summarize grades for a time series}
 \usage{
 summarizeGrades(dataTable)
 }
 \arguments{
 \item{dataTable}{a table output from \code{makeTable}}
 }
+\value{
+a data frame indicating what percentage of the points in a time
+series fall into each grade category
+}
 \description{
-Summarize grades from the complete table
+Summarize grades for a time series
 }

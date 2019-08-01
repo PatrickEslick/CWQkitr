@@ -26,8 +26,12 @@ point nearest the sample time will be used.}
 \item{tz}{the time zone for output, e.g. "America/Chicago", "America/New_York", 
 see \code{OlsonNames()} for more details}
 }
+\value{
+a data frame of QW sample times, streamflow, and discharge merged with 
+continuous streamflow and discharge for comparison.
+}
 \description{
 The table includes QW sample times, as well as any associated gage heights
-and dischrage values associated with the sample. Discharge and gage height
+and discharge values associated with the sample. Discharge and gage height
 are interpolated form the relevant continuous time series for comparison.
 }

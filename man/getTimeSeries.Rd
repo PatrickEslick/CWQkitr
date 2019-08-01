@@ -8,15 +8,20 @@ getTimeSeries(tsID, start, end, names, time_zone, interval = c("All",
   "Hourly", "30-minute", "15-minute", "5-minute"))
 }
 \arguments{
-\item{tsID}{the time series unique identifiers for each series}
+\item{tsID}{a vector of time series unique identifiers for each series that 
+should be included in the output}
 
 \item{start}{the starting date of interest as a string in the form YYYY-MM-DD}
 
-\item{end}{the ending date of itnerest as a string in the form YYYY-MM-DD}
+\item{end}{the ending date of interest as a string in the form YYYY-MM-DD}
 
 \item{names}{the names to use for each series, corresponding to tsID}
 
 \item{time_zone}{the time zone to use for output}
+}
+\value{
+a time series data frame with a separate column for each 
+time series requested. The time series label is used as the column heading.
 }
 \description{
 Get multiple time series joined into one data frame

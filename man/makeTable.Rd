@@ -15,6 +15,10 @@ makeTable(tsID, start, end, parm)
 
 \item{parm}{the parameter name}
 }
+\value{
+a data frame detailing the effects of any fouling and drift corrections
+for each time series point, and the applicable grade.
+}
 \description{
 Make a complete table of correction data and grades
 }

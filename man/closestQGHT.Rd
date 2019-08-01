@@ -15,6 +15,10 @@ closestQGHT(sample_data, cont_data, maxDiff = 4)
 will be used for merging. Any gaps greater than this will show NA for the
 continuous data}
 }
+\value{
+sample data joined with the closest (in time) continuous time series
+point
+}
 \description{
-Merge sample times and continuous data by the closest point
+Not to be used directly, but for \code{getSampleQ}
 }

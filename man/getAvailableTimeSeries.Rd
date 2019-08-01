@@ -10,10 +10,10 @@ getAvailableTimeSeries(location, start, end, publish)
 \item{location}{the location identifier}
 
 \item{start}{the start date (or datetime) as a string in a standard, unambiguous 
-format (recognizeable by \code{as.POSIXct}), or a POSIXct object}
+format (recognizable by \code{as.POSIXct}), or a POSIXct object}
 
 \item{end}{the end date (or datetime) as a string in a standard, unambiguous 
-format (recognizeable by \code{as.POSIXct}), or a POSIXct object}
+format (recognizable by \code{as.POSIXct}), or a POSIXct object}
 
 \item{publish}{a logical indicating whether to limit the search to published
 time series (time series marked "Publish" in AQUARIUS)}

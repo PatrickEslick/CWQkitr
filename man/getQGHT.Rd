@@ -16,6 +16,11 @@ getQGHT(site, start, end, tz = "UTC")
 \item{tz}{the time zone for output, e.g. "America/Chicago", "America/New_York", 
 see \code{OlsonNames()} for more details}
 }
+\value{
+a data frame with a time series of streamflow (00060) and gage height
+(00065), and the associated codes for each time series point (e.g. "A" for approved,
+e for estimated).
+}
 \description{
 Get continuous streamflow and gage height from NWIS web services
 }

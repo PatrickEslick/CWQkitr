@@ -2,21 +2,26 @@
 % Please edit documentation in R/corrections_grades_gaps.R
 \name{applyCorrection}
 \alias{applyCorrection}
-\title{Apply a correction to a time series}
+\title{Apply a single correction to a time series}
 \usage{
 applyCorrection(datetime, raw, correction)
 }
 \arguments{
 \item{datetime}{a vector of datetimes, as POSIXct}
 
-\item{raw}{a numeric vector of raw time series data - should be the same length
-as datetime}
+\item{raw}{a numeric vector of raw time series data corresponding to each datetime. This
+should be the same length as datetime.}
 
 \item{correction}{a multiPointCorrection object}
 }
 \value{
-a numeric data of the value of the correction at each point
+a numeric vector, the same length as \code{datetime} and \code{raw}, giving
+the value of the correction applicable to each point in the time series
 }
 \description{
-Apply a correction to a time series
+Given a multiPointCorrection and a time series, calculate the effect the correction
+would have on the time series
+}
+\seealso{
+[multiPointCorrection()] for details on the multiPointCorrection class
 }

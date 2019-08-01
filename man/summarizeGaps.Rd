@@ -13,7 +13,7 @@ summarizeGaps(gapTest, gapTol)
 tolerances from \code{getGapTolerance}}
 }
 \value{
-a data frame summary of gaps
+a data frame summarizing any gaps in the time series record.
 }
 \description{
 Give a data frame of information about how much of a time period is classified

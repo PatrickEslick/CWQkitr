@@ -10,10 +10,11 @@ findGaps(datetimes, gapTol = 120)
 \item{datetimes}{a vector of datetimes}
 
 \item{gapTol}{the gap tolerance, in minutes or a data frame of gap
-tolerances from \code{getGapTolerance}}
+tolerances from \code{getGapTolerance}. The default value is 120 minutes.}
 }
 \value{
-a data frame of gaps
+a data frame indicating the start date and length of any gaps
+in the time series record.
 }
 \description{
 Find gaps in a time series record

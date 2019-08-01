@@ -12,10 +12,11 @@ applyFouling(timeSeries, corrections)
 \item{corrections}{a list of USGS multi-point corrections from \code{getCorrections}}
 }
 \value{
-a numeric vector of the combined effect of all the fouling corrections in the
-list
+a numeric vector, the same length as the number of rows of \code{timeSeries} 
+showing the combined effect of all the fouling corrections in the list
 }
 \description{
-Apply each correction from a list of multiPointCorrections that is in Set 1 to a
-time series from \code{getRawData}
+Apply each Set 1 correction from a list of multiPointCorrections that is in Set 1 to a
+time series from \code{getRawData}. (Should not be used directly, only from 
+within corrApply)
 }

@@ -7,7 +7,7 @@
 getTimeSeriesIDs(location, parameter)
 }
 \arguments{
-\item{location}{the location indentifier}
+\item{location}{the location identifier}
 
 \item{parameter}{the parameter name}
 }
@@ -16,5 +16,5 @@ a data frame of time series descriptions matching the given location and paramet
 including a column giving the unique identifier for each time series
 }
 \description{
-Get a a list of time series descriptions based on the location identifier and parameter name
+Get a list of time series descriptions based on the location identifier and parameter name
 }

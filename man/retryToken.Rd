@@ -12,8 +12,8 @@ retryToken(id, pw)
 \item{pw}{the encrypted password to use for authentication}
 }
 \value{
-the response from getToken from the succesful authentication or the
-failed reponse from the final try
+the response from \code{getToken} from the successful authentication or the
+failed response from the final try
 }
 \description{
 Retry authentication using the username and password until it works, or a maximum

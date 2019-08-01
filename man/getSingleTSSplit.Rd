@@ -2,7 +2,7 @@
 % Please edit documentation in R/time_series_tools.R
 \name{getSingleTSSplit}
 \alias{getSingleTSSplit}
-\title{Get a single time series, separating the query into 3 year chunks}
+\title{Get a single time series, separating the query into 3-year chunks}
 \usage{
 getSingleTSSplit(tsID, start, end, name)
 }
@@ -11,10 +11,15 @@ getSingleTSSplit(tsID, start, end, name)
 
 \item{start}{the starting date of interest as a string in the form YYYY-MM-DD}
 
-\item{end}{the ending date of itnerest as a string in the form YYYY-MM-DD}
+\item{end}{the ending date of interest as a string in the form YYYY-MM-DD}
 
 \item{name}{the name to use in the data column}
 }
+\value{
+a data frame of corrected time series data for the given time series
+and data range
+}
 \description{
-Get a single time series, separating the query into 3 year chunks
+An entry in the API documentation indicates longer queries should be split up
+into smaller chunks
 }

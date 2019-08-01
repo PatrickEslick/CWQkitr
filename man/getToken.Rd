@@ -9,11 +9,11 @@ getToken(id, pw)
 \arguments{
 \item{id}{the username to use for authentication}
 
-\item{pw}{the encrypted passowrd to use for authentication}
+\item{pw}{the encrypted password to use for authentication}
 }
 \value{
 the response from the authentication
 }
 \description{
-Use the username and encrypted password to authenticate to the aquarius api
+Use the username and encrypted password to authenticate to the AQUARIUS API
 }

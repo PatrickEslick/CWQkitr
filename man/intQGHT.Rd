@@ -15,6 +15,9 @@ intQGHT(sample_data, cont_data, maxDiff = 4)
 will be used for merging. Any gaps greater than this will show NA for the
 continuous data}
 }
+\value{
+sample data with continuous data interpolated for each sample time
+}
 \description{
-Merge sample times and continuous data by interpolation
+Not to be used directly, but for \code{getSampleQ}
 }

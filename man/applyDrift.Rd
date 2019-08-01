@@ -7,7 +7,8 @@
 applyDrift(timeSeries, corrections)
 }
 \arguments{
-\item{timeSeries}{a time series of raw data from \code{getRawData}}
+\item{timeSeries}{a time series with all fouling corrections applied to a column
+called foulingCorrected}
 
 \item{corrections}{a list of USGS multi-point corrections from \code{getCorrections}}
 }
@@ -16,6 +17,7 @@ a numeric vector of the combined effect of all the fouling drift in the
 list
 }
 \description{
-Apply each correction from a list of multiPointCorrections that is in Set 2 to a
-time series from \code{getRawData}
+Apply each Set 2 correction from a list of multiPointCorrections to a
+time series that has had fouling corrections applied to a column foulingCorrected. 
+(Should not be used directly, only from within corrApply)
 }

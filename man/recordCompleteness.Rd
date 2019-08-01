@@ -2,7 +2,7 @@
 % Please edit documentation in R/corrections_grades_gaps.R
 \name{recordCompleteness}
 \alias{recordCompleteness}
-\title{Information for evaluating record completeness}
+\title{Give information for evaluating record completeness}
 \usage{
 recordCompleteness(datetimes, start = "auto", end = "auto",
   freq = "auto")
@@ -11,17 +11,18 @@ recordCompleteness(datetimes, start = "auto", end = "auto",
 \item{datetimes}{a vector of datetimes as POSIXct}
 
 \item{start}{the start date of interest, as POSIXct. If "auto", the first date
-in datetimes will be used}
+in datetimes will be used.}
 
-\item{end}{the end date of itnerest, as POSIXct. If "auto", the last date
-in datetimes will be used}
+\item{end}{the end date of interest, as POSIXct. If "auto", the last date
+in datetimes will be used.}
 
 \item{freq}{the time series frequency, in minutes. If "auto", the most common
-frequency will be used}
+frequency will be used.}
 }
 \value{
-a data frame with information about record completeness
+a data frame with 1 row indicating how many points are expected given the 
+time span and frequency, and how many points remain in the time series.
 }
 \description{
-Information for evaluating record completeness
+Give information for evaluating record completeness
 }
