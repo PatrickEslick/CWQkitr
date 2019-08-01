@@ -17,6 +17,6 @@ getApprovalList(timeSeriesID, start, end)
 a data frame of approval transactions
 }
 \description{
-Get a data frame with details about approval levels were changed for a given time series
-and date range
+Get a data frame with details about when approval levels were changed for a given time series
+in a particular date range
 }

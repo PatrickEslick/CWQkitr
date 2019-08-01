@@ -11,22 +11,23 @@ An S4 class to represent a USGS multipoint correction
 \section{Slots}{
 
 \describe{
-\item{\code{startTime}}{the beginning time of the correction, a POSIXct object}
+\item{\code{startTime}}{the beginning time of the correction, a POSIXct object.}
 
-\item{\code{endTime}}{the ending time of the correction, a POSIXct boject}
+\item{\code{endTime}}{the ending time of the correction, a POSIXct object.}
 
-\item{\code{set}}{the set the correction was applied in, an integer - either 1, 2, or 3}
+\item{\code{set}}{the set the correction was applied in, an integer - either 1 (fouling), 
+2 (drift), or 3 (other).}
 
 \item{\code{startValues}}{the values to which the starting offsets are applied.
-Must be the same length as startOffsets}
+Must be the same length as startOffsets.}
 
 \item{\code{startOffsets}}{the starting offsets of the correction. Must be the same
-length as startValues}
+length as startValues.}
 
 \item{\code{endValues}}{the values to which the ending offsets are applied.
-Must be the same length as endOffsets}
+Must be the same length as endOffsets.}
 
 \item{\code{endOffsets}}{the ending offsets of the correction. Must be the same
-length as endValues}
+length as endValues.}
 }}
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/api_tools.R
 \name{genericAQ}
 \alias{genericAQ}
-\title{Base function to get data or metadata from the AQ API}
+\title{Base function to get data or metadata from the AQ Publish API}
 \usage{
 genericAQ(resource, parameters, values, host = "ts-api.nwis.usgs.gov")
 }
@@ -12,6 +12,8 @@ or corrections (GetCorrectionList). See AQ API documentation for details on avai
 resources}
 
 \item{parameters}{a character vector the names of the parameters to query by}
+
+\item{values}{the values corresponding to each parameter}
 
 \item{host}{the host to use - could be a test server for development, or the production
 server for running real queries}

@@ -14,8 +14,11 @@ getCorrections(tsID, start, end)
 \item{end}{the end date of interest as a string in the form YYYY-MM-DD}
 }
 \value{
-a list of multiPointCorrection objects
+a list of multiPointCorrection objects.
 }
 \description{
 Get a list of USGS Multi-point corrections
+}
+\seealso{
+[multiPointCorrection()] for details on the multiPointCorrection class
 }

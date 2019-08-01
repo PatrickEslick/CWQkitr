@@ -5,8 +5,11 @@
 #' 
 #' @param tsID the time series unique identifier
 #' @param start the starting date of interest as a string in the form YYYY-MM-DD
-#' @param end the ending date of itnerest as a string in the form YYYY-MM-DD
+#' @param end the ending date of interest as a string in the form YYYY-MM-DD
 #' @param name the name to use in the data column
+#' 
+#' @return a data frame of corrected time series data for the given time series
+#' and data range
 #' 
 #' @importFrom magrittr %>%
 #' 
@@ -20,12 +23,18 @@ getSingleTS <- function(tsID, start, end, name) {
   
 }
 
-#' Get a single time series, separating the query into 3 year chunks
+#' Get a single time series, separating the query into 3-year chunks
+#' 
+#' An entry in the API documentation indicates longer queries should be split up
+#' into smaller chunks
 #' 
 #' @param tsID the time series unique identifier
 #' @param start the starting date of interest as a string in the form YYYY-MM-DD
-#' @param end the ending date of itnerest as a string in the form YYYY-MM-DD
+#' @param end the ending date of interest as a string in the form YYYY-MM-DD
 #' @param name the name to use in the data column
+#' 
+#' @return a data frame of corrected time series data for the given time series
+#' and data range
 #' 
 #' @importFrom magrittr %>%
 #' 
@@ -64,11 +73,15 @@ getSingleTSSplit <- function(tsID, start, end, name) {
 
 #' Get multiple time series joined into one data frame
 #' 
-#' @param tsID the time series unique identifiers for each series
+#' @param tsID a vector of time series unique identifiers for each series that 
+#' should be included in the output
 #' @param start the starting date of interest as a string in the form YYYY-MM-DD
-#' @param end the ending date of itnerest as a string in the form YYYY-MM-DD
+#' @param end the ending date of interest as a string in the form YYYY-MM-DD
 #' @param names the names to use for each series, corresponding to tsID
 #' @param time_zone the time zone to use for output
+#' 
+#' @return a time series data frame with a separate column for each 
+#' time series requested. The time series label is used as the column heading.
 #' 
 #' @importFrom magrittr %>%
 #' 
@@ -103,29 +116,5 @@ getTimeSeries <- function(tsID, start, end, names, time_zone,
   out <- out %>%
     dplyr::mutate(datetime = as.character(datetime, format = "%Y-%m-%d %H:%M %Z", tz = time_zone))
   return(out)
-  
-}
-
-#' Authenticate API connection and get multiple time series joined into one data frame
-#' 
-#' For use in asynchronous programming for the shiny application
-#' 
-#' @param tsID the time series unique identifiers for each series
-#' @param start the starting date of interest as a string in the form YYYY-MM-DD
-#' @param end the ending date of itnerest as a string in the form YYYY-MM-DD
-#' @param names the names to use for each series, corresponding to tsID
-#' @param time_zone the time zone to use for output
-#' @param id the AQUARIUS API username to authenticate with
-#' @param pw the AQUARIUS API encrypted password to authenticate with
-#' 
-#' @export
-#' 
-
-getTimeSeriesConnect <- function(tsID, start, end, names, time_zone, 
-                                 interval = c("All", "Hourly", "30-minute", "15-minute", "5-minute"),
-                                 id, pw) {
-  
-  tkn <- retryToken(id, pw)
-  out <- getTimeSeries(tsID, date_range, names, time_zone, interval)
   
 }

@@ -2,15 +2,24 @@
 % Please edit documentation in R/corrections_grades_gaps.R
 \name{findDisapproval}
 \alias{findDisapproval}
-\title{Find periods that have been set back from approved}
+\title{Find periods of record that have been set back from approved}
 \usage{
 findDisapproval(approvalList)
 }
 \arguments{
-\item{approvalList}{a data frame of approval transaction sfrom getApprovalList()}
+\item{approvalList}{a data frame of approval transactions from \code{getApprovalList()}}
+}
+\value{
+a data frame detailing the start and end of any unapproved periods, along with 
+the date they were unapproved, and the user who set the status.
 }
 \description{
-Given a list of approval transactions (from \code{getApprovalList}), give any 
-periods that had been set to approved, but were later set to a lower status, 
-whether working or in review
+Given a list of approval transactions (from \code{getApprovalList()}), return any 
+periods that had been set to Approved (1200), but were later set to a lower status, 
+whether Working (900) or In-Review (1100).
+}
+\examples{
+getApprovalList(...) \%>\%
+    findDisapproval()
+
 }

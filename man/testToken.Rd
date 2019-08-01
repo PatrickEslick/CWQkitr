@@ -7,7 +7,7 @@
 testToken()
 }
 \value{
-a logical indicating whether the API connection is working, and still active
+a logical indicating whether a call to GetUnitList worked correctly
 }
 \description{
 Test to see if the API connection is working

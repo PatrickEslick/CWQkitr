@@ -9,11 +9,18 @@ getAvailableTimeSeries(location, start, end, publish)
 \arguments{
 \item{location}{the location identifier}
 
-\item{start}{the start date (or datetime) as a string in a standard 
-format, or a POSIXct object}
+\item{start}{the start date (or datetime) as a string in a standard, unambiguous 
+format (recognizeable by \code{as.POSIXct}), or a POSIXct object}
 
-\item{end}{the end date (or datetime) as a string in a standard 
-format, or a POSIXct}
+\item{end}{the end date (or datetime) as a string in a standard, unambiguous 
+format (recognizeable by \code{as.POSIXct}), or a POSIXct object}
+
+\item{publish}{a logical indicating whether to limit the search to published
+time series (time series marked "Publish" in AQUARIUS)}
+}
+\value{
+a data frame of time series descriptions for all available time series. Return
+NULL if no time series match the given parameters
 }
 \description{
 Get all available time series for a location and date range

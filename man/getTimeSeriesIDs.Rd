@@ -2,7 +2,7 @@
 % Please edit documentation in R/api_tools.R
 \name{getTimeSeriesIDs}
 \alias{getTimeSeriesIDs}
-\title{Get a list of time series unique identifiers}
+\title{Get time series descriptions, including unique identifiers}
 \usage{
 getTimeSeriesIDs(location, parameter)
 }
@@ -16,5 +16,5 @@ a data frame of time series descriptions matching the given location and paramet
 including a column giving the unique identifier for each time series
 }
 \description{
-Get a list of time series unique identifiers for a given location and parameter name
+Get a a list of time series descriptions based on the location identifier and parameter name
 }

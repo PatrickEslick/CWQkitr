@@ -2,7 +2,7 @@
 % Please edit documentation in R/api_tools.R
 \name{getCorrectedData}
 \alias{getCorrectedData}
-\title{Get corrected data for the time series data}
+\title{Get corrected data for the time series}
 \usage{
 getCorrectedData(tsID, start, end)
 }
@@ -14,7 +14,9 @@ getCorrectedData(tsID, start, end)
 \item{end}{the ending date of itnerest as a string in the form YYYY-MM-DD}
 }
 \value{
-a data frame of corrected data for the time series
+a data frame of corrected data for the time series. If no data is
+found for the time series and date range, return a data frame with no columns
+or rows.
 }
 \description{
 Get time series data from AQUARIUS with all corrections applied

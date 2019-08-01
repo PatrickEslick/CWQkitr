@@ -1,18 +1,21 @@
-
 #' An S4 class to represent a USGS multipoint correction
 #' 
-#' @slot startTime the beginning time of the correction, a POSIXct object
-#' @slot endTime the ending time of the correction, a POSIXct boject
-#' @slot set the set the correction was applied in, an integer - either 1, 2, or 3
+#' @slot startTime the beginning time of the correction, a POSIXct object.
+#' @slot endTime the ending time of the correction, a POSIXct object.
+#' @slot set the set the correction was applied in, an integer - either 1 (fouling), 
+#' 2 (drift), or 3 (other).
 #' @slot startValues the values to which the starting offsets are applied.
-#' Must be the same length as startOffsets
+#' Must be the same length as startOffsets.
 #' @slot startOffsets the starting offsets of the correction. Must be the same
-#' length as startValues
+#' length as startValues.
 #' @slot endValues the values to which the ending offsets are applied.
-#' Must be the same length as endOffsets
+#' Must be the same length as endOffsets.
 #' @slot endOffsets the ending offsets of the correction. Must be the same
-#' length as endValues
+#' length as endValues.
 #' 
+#' @export
+#' 
+
 multiPointCorrection <- setClass(
   "multiPointCorrection",
   slots = c(
@@ -64,7 +67,7 @@ isOverlap <- function(start1, end1, start2, end2) {
 #' @param end2 the end of the second interval
 #' 
 #' @return a vector of length 2 giving the start and end of the overlap
-#' between the two intevals
+#' between the two intervals
 #' 
 
 whatOverlap <- function(start1, end1, start2, end2) {
@@ -81,13 +84,20 @@ whatOverlap <- function(start1, end1, start2, end2) {
   return(c(overlapStart, overlapEnd))
 }
 
-#' Find periods that have been set back from approved
+#' Find periods of record that have been set back from approved
 #' 
-#' Given a list of approval transactions (from \code{getApprovalList}), give any 
-#' periods that had been set to approved, but were later set to a lower status, 
-#' whether working or in review
+#' Given a list of approval transactions (from \code{getApprovalList()}), return any 
+#' periods that had been set to Approved (1200), but were later set to a lower status, 
+#' whether Working (900) or In-Review (1100).
 #' 
-#' @param approvalList a data frame of approval transaction sfrom getApprovalList()
+#' @param approvalList a data frame of approval transactions from \code{getApprovalList()}
+#' 
+#' @return a data frame detailing the start and end of any unapproved periods, along with 
+#' the date they were unapproved, and the user who set the status.
+#' 
+#' @examples 
+#' getApprovalList(...) %>%
+#'     findDisapproval()
 #' 
 #' @export
 #' 
@@ -133,19 +143,28 @@ findDisapproval <- function(approvalList) {
   
 }
 
-#' Apply a correction to a time series
+#' Apply a single correction to a time series
+#' 
+#' Given a multiPointCorrection and a time series, calculate the effect the correction
+#' would have on the time series
 #' 
 #' @param datetime a vector of datetimes, as POSIXct
-#' @param raw a numeric vector of raw time series data - should be the same length
-#' as datetime
+#' @param raw a numeric vector of raw time series data corresponding to each datetime. This
+#' should be the same length as datetime.
 #' @param correction a multiPointCorrection object
 #' 
-#' @return a numeric data of the value of the correction at each point
+#' @return a numeric vector, the same length as \code{datetime} and \code{raw}, giving
+#' the value of the correction applicable to each point in the time series
+#' 
+#' @seealso [multiPointCorrection()] for details on the multiPointCorrection class
 #' 
 #' @export
 #' 
 
 applyCorrection <- function(datetime, raw, correction) {
+  
+  if(length(datetime) != length(raw))
+    stop("datetime not the same length as raw data")
   
   #Find the time factor for each raw value
   tf <- approx(x = c(correction@startTime, correction@endTime),
@@ -185,14 +204,15 @@ applyCorrection <- function(datetime, raw, correction) {
 
 #' Apply all fouling corrections from a list of corrections
 #' 
-#' Apply each correction from a list of multiPointCorrections that is in Set 1 to a
-#' time series from \code{getRawData}
+#' Apply each Set 1 correction from a list of multiPointCorrections that is in Set 1 to a
+#' time series from \code{getRawData}. (Should not be used directly, only from 
+#' within corrApply)
 #' 
 #' @param timeSeries a time series of raw data from \code{getRawData}
 #' @param corrections a list of USGS multi-point corrections from \code{getCorrections}
 #' 
-#' @return a numeric vector of the combined effect of all the fouling corrections in the
-#' list
+#' @return a numeric vector, the same length as the number of rows of \code{timeSeries} 
+#' showing the combined effect of all the fouling corrections in the list
 #' 
 
 applyFouling <- function(timeSeries, corrections) {
@@ -208,10 +228,12 @@ applyFouling <- function(timeSeries, corrections) {
 
 #' Apply all drift corrections from a list of corrections
 #' 
-#' Apply each correction from a list of multiPointCorrections that is in Set 2 to a
-#' time series from \code{getRawData}
+#' Apply each Set 2 correction from a list of multiPointCorrections to a
+#' time series that has had fouling corrections applied to a column foulingCorrected. 
+#' (Should not be used directly, only from within corrApply)
 #' 
-#' @param timeSeries a time series of raw data from \code{getRawData}
+#' @param timeSeries a time series with all fouling corrections applied to a column
+#' called foulingCorrected
 #' @param corrections a list of USGS multi-point corrections from \code{getCorrections}
 #' 
 #' @return a numeric vector of the combined effect of all the fouling drift in the
@@ -229,19 +251,28 @@ applyDrift <- function(timeSeries, corrections) {
   return(timeSeries$driftCorrection)
 }
 
-#' Create a data frame of raw time series data with corrections annotated
+#' Create a data frame of time series data with details on corrections
 #' 
 #' @param tsID the time series unique identifier
 #' @param startDate the start date of interest as a string in the form YYYY-MM-DD
 #' @param endDate the end date of interest as a string in the form YYYY-MM-DD
 #' 
+#' @return a data frame of time series data. The value of all fouling
+#' and drift corrections is shown for each point in the time series.
+#' 
+#' @export
+#' 
 
-corrApply <- function(tsID, startDate, endDate) {
+corrApply <- function(tsID, start, end) {
   
   #Get raw time series 
-  timeSeries <- getRawData(tsID, startDate, endDate)
+  timeSeries <- getRawData(tsID, start, end)
+  if(nrow(timeSeries) == 0) {
+    message("No raw data found")
+    return(data.frame())
+  }
   #Download corrections
-  corrections <- getCorrections(tsID, startDate, endDate)
+  corrections <- getCorrections(tsID, start, end)
   #Calculate the fouling corrections
   timeSeries$fouling <- applyFouling(timeSeries, corrections)
   timeSeries$foulingPercent <- (timeSeries$fouling/timeSeries$raw) * 100
@@ -367,12 +398,20 @@ wagnerGrade <- function(parameter, raw, percent, numerical) {
 #' @param tsID the unique time series identifier
 #' @param start the start date of interest as a string in the form YYYY-MM-DD
 #' @param end the end date of interest as a string in the form YYYY-MM-DD
-#' @param parm  the parameter name
+#' @param parm the parameter name
+#' 
+#' @return a data frame detailing the effects of any fouling and drift corrections
+#' for each time series point, and the applicable grade.
+#' 
+#' @export
 #' 
 
 makeTable <- function(tsID, start, end, parm) {
   #Get data and apply corrections
   output <- corrApply(tsID, start, end)
+  if(nrow(output) == 0) {
+    return(data.frame())
+  }
   #Only keep data that's in the final data
   correctedData <- getCorrectedData(tsID, start, end)
   output <- output[output$datetime %in% correctedData$datetime,]
@@ -383,30 +422,14 @@ makeTable <- function(tsID, start, end, parm) {
   return(output)
 }
 
-#' Wrapper for makeTable, with internal API authentication
-#' 
-#' Used for asynchronous programming in the shiny application.
-#' 
-#' @param tsID the unique time series identifier
-#' @param start the start date of interest as a string in the form YYYY-MM-DD
-#' @param end the end date of interest as a string in the form YYYY-MM-DD
-#' @param parm  the parameter name
-#' @param id the username to use for authentication
-#' @param pw the encrypted passowrd to use for authentication
-#' 
-#' @export
-#' 
-
-makeTableConnect <- function(tsID, start, end, parm, id, pw) {
-  
-  tkn <- retryToken(id, pw)
-  out <- makeTable(tsID, start, end, parm)
-  
-}
-
-#' Summarize grades from the complete table
+#' Summarize grades for a time series
 #' 
 #' @param dataTable a table output from \code{makeTable}
+#' 
+#' @return a data frame indicating what percentage of the points in a time
+#' series fall into each grade category
+#' 
+#' @export
 #' 
 
 summarizeGrades <- function(dataTable) {
@@ -432,17 +455,20 @@ summarizeGrades <- function(dataTable) {
   
 }
 
-#' Information for evaluating record completeness
+#' Give information for evaluating record completeness
 #' 
 #' @param datetimes a vector of datetimes as POSIXct
 #' @param start the start date of interest, as POSIXct. If "auto", the first date
-#' in datetimes will be used
-#' @param end the end date of itnerest, as POSIXct. If "auto", the last date
-#' in datetimes will be used
+#' in datetimes will be used.
+#' @param end the end date of interest, as POSIXct. If "auto", the last date
+#' in datetimes will be used.
 #' @param freq the time series frequency, in minutes. If "auto", the most common
-#' frequency will be used
+#' frequency will be used.
 #' 
-#' @return a data frame with information about record completeness
+#' @return a data frame with 1 row indicating how many points are expected given the 
+#' time span and frequency, and how many points remain in the time series.
+#' 
+#' @export 
 #' 
 
 recordCompleteness <- function(datetimes, start = "auto", end = "auto", freq = "auto") {
@@ -488,9 +514,12 @@ recordCompleteness <- function(datetimes, start = "auto", end = "auto", freq = "
 #' 
 #' @param datetimes a vector of datetimes
 #' @param gapTol the gap tolerance, in minutes or a data frame of gap
-#' tolerances from \code{getGapTolerance}
+#' tolerances from \code{getGapTolerance}. The default value is 120 minutes.
 #' 
-#' @return a data frame of gaps
+#' @return a data frame indicating the start date and length of any gaps
+#' in the time series record.
+#' 
+#' @export
 #' 
 
 findGaps <- function(datetimes, gapTol = 120) {
@@ -500,7 +529,7 @@ findGaps <- function(datetimes, gapTol = 120) {
   diff[1] <- 0
   gap <- rep(FALSE, length(datetimes))
   gapTimes <- data.frame(datetime = datetimes, diff = diff, gap = gap)
-  if(class(gapTol) == "data.frame") {
+  if(is.data.frame(gapTol)) {
     for(i in 1:nrow(gapTol)) {
       temp <- ifelse(gapTimes$datetime >= gapTol$StartTime[i] & 
                        gapTimes$datetime <= gapTol$EndTime[i] & 
@@ -508,7 +537,7 @@ findGaps <- function(datetimes, gapTol = 120) {
                      TRUE, FALSE)
       gapTimes$gap <- gapTimes$gap | temp
     }
-  } else if(class(gapTol) == "numeric") {
+  } else if(is.numeric(gapTol)) {
     gapTimes$gap <- gapTimes$diff > gapTol
   }
   return(gapTimes)
@@ -523,9 +552,10 @@ findGaps <- function(datetimes, gapTol = 120) {
 #' @param gapTol the gap tolerance, in minutes or a data frame of gap
 #' tolerances from \code{getGapTolerance}
 #' 
-#' @return a data frame summary of gaps
+#' @return a data frame summarizing any gaps in the time series record.
 #' 
 #' @export
+#' 
 
 summarizeGaps <- function(gapTest, gapTol) {
   
@@ -538,7 +568,7 @@ summarizeGaps <- function(gapTest, gapTol) {
   gap_time <- sum(gapTest$diff[gapTest$gap==TRUE])
   gap_percent <- round((gap_time / time_span) * 100, 1)
   gap_percent <- paste(gap_percent, "%")
-  if(class(gapTol) == "numeric") {
+  if(is.numeric(gapTol)) {
     tolerance <- gapTol
   } else {
     if(min(gapTol$ToleranceInMinutes) == max(gapTol$ToleranceInMinutes)) {

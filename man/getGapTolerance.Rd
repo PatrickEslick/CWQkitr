@@ -13,6 +13,10 @@ getGapTolerance(tsID, start, end)
 
 \item{end}{the end date of interest as a string in the form YYYY-MM-DD}
 }
+\value{
+a data frame of gap tolerances. The gap tolerance for a time series
+can be changed over time, so the data frame may have 1 or many rows.
+}
 \description{
 Get gap tolerances from AQUARIUS
 }

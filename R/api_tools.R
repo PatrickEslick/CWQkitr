@@ -1,4 +1,4 @@
-#' Base function to get data or metadata from the AQ API
+#' Base function to get data or metadata from the AQ Publish API
 #' 
 #' Given a service request and a set of query parameters and values, return the 
 #' output from the API
@@ -7,13 +7,20 @@
 #' or corrections (GetCorrectionList). See AQ API documentation for details on available
 #' resources
 #' @param parameters a character vector the names of the parameters to query by 
+#' @param values the values corresponding to each parameter
 #' @param host the host to use - could be a test server for development, or the production
 #' server for running real queries
 #' 
 #' @return the response from the query
 #' 
+#' @export
+#' 
 
 genericAQ <- function(resource, parameters, values, host="ts-api.nwis.usgs.gov") {
+  
+  if(length(parameters) != length(values))
+    stop("parameters not the same length as values")
+  
   url <- paste0("http://", host, "/AQUARIUS/Publish/V2/" , resource, "?")
   q <- as.list(values)
   names(q) <- parameters
@@ -25,10 +32,10 @@ genericAQ <- function(resource, parameters, values, host="ts-api.nwis.usgs.gov")
 
 #' Authenticate to the AQ API
 #' 
-#' Use the username and encrypted password to authenticate to the aquarius api
+#' Use the username and encrypted password to authenticate to the AQUARIUS API
 #' 
 #' @param id the username to use for authentication
-#' @param pw the encrypted passowrd to use for authentication
+#' @param pw the encrypted password to use for authentication
 #' 
 #' @return the response from the authentication
 #' 
@@ -44,8 +51,11 @@ getToken <- function(id, pw) {
 
 #' Test to see if the API connection is working
 #' 
-#' @return a logical indicating whether the API connection is working, and still active
+#' @return a logical indicating whether a call to GetUnitList worked correctly
 #' 
+#' @export
+#' 
+
 testToken <- function() {
   test <- try({genericAQ("GetUnitList", "GroupIdentifier", "Capacitance")}, silent=TRUE)
   if(class(test) != "try-error") {
@@ -63,8 +73,10 @@ testToken <- function() {
 #' @param id the username to use for authentication
 #' @param pw the encrypted password to use for authentication
 #' 
-#' @return the response from getToken from the succesful authentication or the
-#' failed reponse from the final try
+#' @return the response from \code{getToken} from the successful authentication or the
+#' failed response from the final try
+#' 
+#' @export
 #' 
 
 retryToken <- function(id, pw) {
@@ -78,11 +90,11 @@ retryToken <- function(id, pw) {
   return(tkn)
 }
 
-#' Get a list of time series unique identifiers
+#' Get time series descriptions, including unique identifiers
 #' 
-#' Get a list of time series unique identifiers for a given location and parameter name
+#' Get a list of time series descriptions based on the location identifier and parameter name
 #' 
-#' @param location the location indentifier
+#' @param location the location identifier
 #' @param parameter the parameter name
 #' 
 #' @return a data frame of time series descriptions matching the given location and parameter,
@@ -102,10 +114,10 @@ getTimeSeriesIDs <- function(location, parameter) {
 
 #' Get a list of approval transactions
 #' 
-#' Get a data frame with details about approval levels were changed for a given time series
-#' and date range
+#' Get a data frame with details about when approval levels were changed for a given time series
+#' in a particular date range
 #' 
-#' @param timeSeriesID the time series unique identifier
+#' @param tsID the time series unique identifier
 #' @param start the starting date of interest, as a string in the form YYYY-MM-DD
 #' @param end the ending date of interest, as a string in the format YYYY-MM-DD
 #' 
@@ -114,10 +126,10 @@ getTimeSeriesIDs <- function(location, parameter) {
 #' @export
 #' 
 
-getApprovalList <- function(timeSeriesID, start, end) {
+getApprovalList <- function(tsID, start, end) {
   serviceRequest <- "GetApprovalsTransactionList"
   parameters <- c("TimeSeriesUniqueId", "QueryFrom", "QueryTo")
-  values <- c(timeSeriesID, start, end)
+  values <- c(tsID, start, end)
   raw <- genericAQ(serviceRequest, parameters, values)
   out <- raw$ApprovalsTransactions
   out$DateAppliedUtc <- as.POSIXct(out$DateAppliedUtc, format="%Y-%m-%dT%H:%M", tz = "GMT")
@@ -128,14 +140,15 @@ getApprovalList <- function(timeSeriesID, start, end) {
 
 #' Get raw (uncorrected) time series data
 #' 
-#' Return a time series of data from AQUARIUS without any corrections applied, including
-#' deletes and USGS multi-point corrections
+#' Return a time series of data from AQUARIUS without any corrections applied
 #' 
 #' @param tsID the time series unique identifier
-#' @param start the starting data of interest as a string in the form YYYY-MM-DD
+#' @param start the starting date of interest as a string in the form YYYY-MM-DD
 #' @param end the ending date of interest as a string in the form YYYY-MM-DD
 #' 
-#' @return a data frame of the raw time series data
+#' @return a data frame of the raw time series data. If no data is
+#' found for the time series and date range, return a data frame with no columns
+#' or rows.
 #' 
 #' @export
 #' 
@@ -146,22 +159,29 @@ getRawData <- function(tsID, start, end) {
   values <- c(tsID, start, end, "PointsOnly", "0")
   raw <- genericAQ(serviceRequest, parameters, values)
   out <- raw$Points
-  out[,2] <- out[,2][,1]
-  out$Timestamp <- as.POSIXct(out$Timestamp, format="%Y-%m-%dT%H:%M:%S", tz="GMT")
-  names(out) <- c("datetime", "raw")
-  out <- na.omit(out)
+  if(length(out) == 0) {
+    message("No data found")
+    out <- data.frame()
+  } else {
+    out[,2] <- out[,2][,1]
+    out$Timestamp <- as.POSIXct(out$Timestamp, format="%Y-%m-%dT%H:%M:%S", tz="GMT")
+    names(out) <- c("datetime", "raw")
+    out <- na.omit(out)
+  }
   return(out)
 }
 
-#' Get corrected data for the time series data
+#' Get corrected data for the time series
 #' 
 #' Get time series data from AQUARIUS with all corrections applied
 #' 
 #' @param tsID the time series unique identifier
 #' @param start the starting date of interest as a string in the form YYYY-MM-DD
-#' @param end the ending date of itnerest as a string in the form YYYY-MM-DD
+#' @param end the ending date of interest as a string in the form YYYY-MM-DD
 #' 
-#' @return a data frame of corrected data for the time series
+#' @return a data frame of corrected data for the time series. If no data is
+#' found for the time series and date range, return a data frame with no columns
+#' or rows.
 #' 
 #' @export
 #' 
@@ -172,10 +192,15 @@ getCorrectedData <- function(tsID, start, end) {
   values <- c(tsID, start, end, "PointsOnly", "0")
   corrected <- genericAQ(serviceRequest, parameters, values)
   out <- corrected$Points
-  out[,2] <- out[,2][,1]
-  out$Timestamp <- as.POSIXct(out$Timestamp, format="%Y-%m-%dT%H:%M:%S", tz="GMT")
-  names(out) <- c("datetime", "corrected")
-  out <- na.omit(out)
+  if(length(out) == 0) {
+    message("No data found")
+    out <- data.frame()
+  } else {
+    out[,2] <- out[,2][,1]
+    out$Timestamp <- as.POSIXct(out$Timestamp, format="%Y-%m-%dT%H:%M:%S", tz="GMT")
+    names(out) <- c("datetime", "corrected")
+    out <- na.omit(out)
+  }
   return(out)
 }
 
@@ -185,7 +210,9 @@ getCorrectedData <- function(tsID, start, end) {
 #' @param start the start date of interest as a string in the form YYYY-MM-DD
 #' @param end the end date of interest as a string in the form YYYY-MM-DD
 #' 
-#' @return a list of multiPointCorrection objects
+#' @return a list of multiPointCorrection objects.
+#' 
+#' @seealso [multiPointCorrection()] for details on the multiPointCorrection class
 #' 
 #' @importFrom magrittr %>%
 #' 
@@ -243,7 +270,11 @@ getCorrections <- function(tsID, start, end) {
 #' @param start the start date of interest as a string in the form YYYY-MM-DD
 #' @param end the end date of interest as a string in the form YYYY-MM-DD
 #' 
+#' @return a data frame of gap tolerances. The gap tolerance for a time series
+#' can be changed over time, so the data frame may have 1 or many rows.
+#' 
 #' @export
+#' 
 
 getGapTolerance <- function(tsID, start, end) {
   serviceRequest <- "GetTimeSeriesCorrectedData"
@@ -259,17 +290,28 @@ getGapTolerance <- function(tsID, start, end) {
 #' Get all available time series for a location and date range
 #' 
 #' @param location the location identifier
-#' @param start the start date (or datetime) as a string in a standard 
-#' format, or a POSIXct object
-#' @param end the end date (or datetime) as a string in a standard 
-#' format, or a POSIXct
+#' @param start the start date (or datetime) as a string in a standard, unambiguous 
+#' format (recognizable by \code{as.POSIXct}), or a POSIXct object
+#' @param end the end date (or datetime) as a string in a standard, unambiguous 
+#' format (recognizable by \code{as.POSIXct}), or a POSIXct object
+#' @param publish a logical indicating whether to limit the search to published
+#' time series (time series marked "Publish" in AQUARIUS)
+#' 
+#' @return a data frame of time series descriptions for all available time series. Return
+#' NULL if no time series match the given parameters
+#' 
+#' @importFrom magrittr %>%
+#' 
+#' @export
+#' 
 
 getAvailableTimeSeries <- function(location, start, end, publish) {
-  date_range <- as.POSIXct(c(start, end))
   
+  date_range <- as.POSIXct(c(start, end))
   if(any(is.na(date_range))) {
     stop("Invalid date range")
   }
+  
   serviceRequest <- "GetTimeSeriesDescriptionList"
   if(publish) {
     parameters <- c("LocationIdentifier", "Publish", "ComputationIdentifier", "ComputationPeriodIdentifier")

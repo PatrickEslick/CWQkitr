@@ -1,10 +1,13 @@
-#' Find QW sample times, with streamflow and gage height, if available
+#' Find QW sample times, with streamflow and gage height, if available from NWIS web services
 #' 
 #' @param site USGS site number
 #' @param start the start date of interest, as a string in the form YYYY-MM-DD
 #' @param end the start date of interest, as a string in the form YYYY-MM-DD
 #' @param tz the time zone for output, e.g. "America/Chicago", "America/New_York", 
 #' see \code{OlsonNames()} for more details
+#' 
+#' @return a data frame of QW sample times. For each QW sample, the sample start time,
+#' and associated streamflow (00061) and gage height (00065) are given.
 #' 
 #' @export
 #' 
@@ -42,6 +45,10 @@ getSampleTimes <- function(site, start, end, tz = "UTC") {
 #' @param tz the time zone for output, e.g. "America/Chicago", "America/New_York", 
 #' see \code{OlsonNames()} for more details
 #' 
+#' @return a data frame with a time series of streamflow (00060) and gage height
+#' (00065), and the associated codes for each time series point (e.g. "A" for approved,
+#' e for estimated).
+#' 
 #' @export
 #' 
 
@@ -72,13 +79,18 @@ getQGHT <- function(site, start, end, tz = "UTC") {
 
 #' Merge sample times and continuous data by the closest point
 #' 
+#' Not to be used directly, but for \code{getSampleQ}
+#' 
 #' @param sample_data sample times from \code{getSampleTimes}
 #' @param cont_data continuous streamflow and gage height data from \code{getQGHT}
 #' @param maxDiff the maximum gap, in hours, in the continuous data that 
 #' will be used for merging. Any gaps greater than this will show NA for the
 #' continuous data
 #' 
-#' @export
+#' @importFrom magrittr %>%
+#' 
+#' @return sample data joined with the closest (in time) continuous time series
+#' point
 
 closestQGHT <- function(sample_data, cont_data, maxDiff = 4) {
   
@@ -94,13 +106,17 @@ closestQGHT <- function(sample_data, cont_data, maxDiff = 4) {
 
 #' Merge sample times and continuous data by interpolation
 #' 
+#' Not to be used directly, but for \code{getSampleQ}
+#' 
 #' @param sample_data sample times from \code{getSampleTimes}
 #' @param cont_data continuous streamflow and gage height data from \code{getQGHT}
 #' @param maxDiff the maximum gap, in hours, in the continuous data that 
 #' will be used for merging. Any gaps greater than this will show NA for the
 #' continuous data
 #' 
-#' @impotrFrom magrittr %>%
+#' @return sample data with continuous data interpolated for each sample time
+#' 
+#' @importFrom magrittr %>%
 
 intQGHT <- function(sample_data, cont_data, maxDiff = 4) {
 
@@ -148,7 +164,7 @@ intQGHT <- function(sample_data, cont_data, maxDiff = 4) {
 #' Get a table of sample times, flows and gage heights
 #' 
 #' The table includes QW sample times, as well as any associated gage heights
-#' and dischrage values associated with the sample. Discharge and gage height
+#' and discharge values associated with the sample. Discharge and gage height
 #' are interpolated form the relevant continuous time series for comparison.
 #' 
 #' @param site USGS site number
@@ -163,6 +179,9 @@ intQGHT <- function(sample_data, cont_data, maxDiff = 4) {
 #' point nearest the sample time will be used.
 #' @param tz the time zone for output, e.g. "America/Chicago", "America/New_York", 
 #' see \code{OlsonNames()} for more details
+#' 
+#' @return a data frame of QW sample times, streamflow, and discharge merged with 
+#' continuous streamflow and discharge for comparison.
 #' 
 #' @export
 #' 
