@@ -189,7 +189,7 @@ server <- function(input, output) {
     })
     
     if(location != "") {
-      output <- makeTableConnect(tsID, start, end, parm,
+      output <- makeTable(tsID, start, end, parm,
                                           id = Sys.getenv("apiid"),
                                           pw = Sys.getenv("apipw"))
     } else {
