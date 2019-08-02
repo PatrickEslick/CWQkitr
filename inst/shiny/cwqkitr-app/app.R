@@ -41,7 +41,7 @@ ui <- dashboardPage(
               )
             ),
             textOutput("cgg_text")
-          )
+          , width = 10)
         ),
         fluidRow(
           box(
@@ -86,10 +86,10 @@ ui <- dashboardPage(
                                               "Pacific" = "America/Los_Angeles", 
                                               "UTC" = "GMT"))),
             column(3, selectInput("dts_interval", "Time interval",
-                                  choices = c("All", "Hourly", "30-minute", "15-minute"))),
+                                  choices = c("All", "Hourly", "30-minute", "15-minute", "5-minute"))),
             column(1, style = "margin-top: 25px;", downloadButton("download_data", "Download"))
           )
-        )        
+        , width = 9)        
       ),
       tabItem(tabName = "sampleq",
         box(
@@ -189,9 +189,7 @@ server <- function(input, output) {
     })
     
     if(location != "") {
-      output <- makeTable(tsID, start, end, parm,
-                                          id = Sys.getenv("apiid"),
-                                          pw = Sys.getenv("apipw"))
+      output <- makeTable(tsID, start, end, parm)
     } else {
       output <- data.frame()
     }

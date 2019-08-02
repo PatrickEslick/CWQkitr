@@ -414,7 +414,7 @@ makeTable <- function(tsID, start, end, parm) {
   correctedData <- getCorrectedData(tsID, start, end)
   output <- output[output$datetime %in% correctedData$datetime,]
   #Give the data a grade
-  output <- stats::na.omit()(output)
+  output <- stats::na.omit(output)
   grade <- wagnerGrade(parm, output$raw, output$sumPercent, output$sumNumeric)
   output$Grade <- grade
   return(output)

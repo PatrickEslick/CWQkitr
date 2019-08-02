@@ -39,24 +39,22 @@ The table in the time series tab shows the raw value, values of fouling and drif
 
 #### Record completeness  
 
-##### Gap table
-
 Shows information about gaps and deleted points. The gap tolerance and observation frequency can 
 be selected from the drop-down menus. If AQUARIUS gap tolerance is selected, gap tolerances associated
 with the selected time series will be used.
 
-**start_date** - the start date of the period selected
-**end_date** - the end date of the period selected
-**gap_percent** - the percentage of time that is in a gap
-**gap_time** - the total time, in minutes, that falls into a gap
-**time_span** - the total time span of the period, in minutes
-**tolerance** - the gap tolerance, in minutes
-**completeness** - the percentage of points present in the time series relative to the maximum number of points
-that could have been in the time series if none were deleted or otherwise missing
-**frequency_minutes** - the time series frequency used for the completeness calculation
+**start_date** - the start date of the period selected  
+**end_date** - the end date of the period selected  
+**gap_percent** - the percentage of time that is in a gap  
+**gap_time** - the total time, in minutes, that falls into a gap  
+**time_span** - the total time span of the period, in minutes  
+**tolerance** - the gap tolerance, in minutes  
+**completeness** - the percentage of points present in the time series relative to the maximum number of points  
+that could have been in the time series if none were deleted or otherwise missing  
+**frequency_minutes** - the time series frequency used for the completeness calculation  
 **points_expected** - the maximum number of points that could have been in the time series given the frequency and
-time span selected
-**points_observed** - the total number of points in the final corrected data for the time series
+time span selected  
+**points_observed** - the total number of points in the final corrected data for the time series  
 
 #### Approval
 
