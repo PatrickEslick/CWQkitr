@@ -18,6 +18,8 @@ should be included in the output}
 \item{names}{the names to use for each series, corresponding to tsID}
 
 \item{time_zone}{the time zone to use for output}
+
+\item{interval}{the time series interval to use}
 }
 \value{
 a time series data frame with a separate column for each 

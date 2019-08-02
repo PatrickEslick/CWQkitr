@@ -6,16 +6,12 @@
 #'
 #' Launch the CWQkitrapp in a browser
 #'
-#' @import shinydashboard
-#' @import shiny
-#' @import dplyr
-#'
 #' @export
 #'
 
 runCWQkitr <- function() {
   
-  app_dir <- system.file("shiny", "cwqkitr-app", package = "CyAN")
+  app_dir <- system.file("shiny", "cwqkitr-app", package = "CWQkitr")
   if(app_dir == "") {
     stop("Couldn't find app directory, try reinstalling the package")
   }

@@ -18,8 +18,3 @@ Given a list of approval transactions (from \code{getApprovalList()}), return an
 periods that had been set to Approved (1200), but were later set to a lower status, 
 whether Working (900) or In-Review (1100).
 }
-\examples{
-getApprovalList(...) \%>\%
-    findDisapproval()
-
-}

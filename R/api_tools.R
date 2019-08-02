@@ -166,7 +166,7 @@ getRawData <- function(tsID, start, end) {
     out[,2] <- out[,2][,1]
     out$Timestamp <- as.POSIXct(out$Timestamp, format="%Y-%m-%dT%H:%M:%S", tz="GMT")
     names(out) <- c("datetime", "raw")
-    out <- na.omit(out)
+    out <- stats::na.omit(out)
   }
   return(out)
 }
@@ -199,7 +199,7 @@ getCorrectedData <- function(tsID, start, end) {
     out[,2] <- out[,2][,1]
     out$Timestamp <- as.POSIXct(out$Timestamp, format="%Y-%m-%dT%H:%M:%S", tz="GMT")
     names(out) <- c("datetime", "corrected")
-    out <- na.omit(out)
+    out <- stats::na.omit(out)
   }
   return(out)
 }
@@ -220,6 +220,8 @@ getCorrectedData <- function(tsID, start, end) {
 #' 
 
 getCorrections <- function(tsID, start, end) {
+  
+  Type <- StartTime <- EndTime <- endNull <- startNull <- . <- ".dplyr.var"
   
   parameters <- c("TimeSeriesUniqueId", "QueryFrom", "QueryTo")
   values <- c(tsID, start, end)
@@ -306,6 +308,8 @@ getGapTolerance <- function(tsID, start, end) {
 #' 
 
 getAvailableTimeSeries <- function(location, start, end, publish) {
+  
+  RawStartTime <- RawEndTime <- ".dplyr.var"
   
   date_range <- as.POSIXct(c(start, end))
   if(any(is.na(date_range))) {

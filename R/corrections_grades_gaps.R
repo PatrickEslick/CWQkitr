@@ -13,6 +13,8 @@
 #' @slot endOffsets the ending offsets of the correction. Must be the same
 #' length as endValues.
 #' 
+#' @import methods
+#' 
 #' @export
 #' 
 
@@ -95,10 +97,6 @@ whatOverlap <- function(start1, end1, start2, end2) {
 #' @return a data frame detailing the start and end of any unapproved periods, along with 
 #' the date they were unapproved, and the user who set the status.
 #' 
-#' @examples 
-#' getApprovalList(...) %>%
-#'     findDisapproval()
-#' 
 #' @export
 #' 
 
@@ -167,14 +165,14 @@ applyCorrection <- function(datetime, raw, correction) {
     stop("datetime not the same length as raw data")
   
   #Find the time factor for each raw value
-  tf <- approx(x = c(correction@startTime, correction@endTime),
+  tf <- stats::approx(x = c(correction@startTime, correction@endTime),
                y = c(0, 1),
                xout = datetime,
                yleft = NA,
                yright = NA)$y
   #Interpolate correction start points for each raw value
   if(length(correction@startOffsets) > 1) {
-    sc <- approx(x = correction@startValues, 
+    sc <- stats::approx(x = correction@startValues, 
                  y = correction@startOffsets, 
                  xout = raw,
                  yleft = correction@startOffsets[which.min(correction@startValues)],
@@ -186,7 +184,7 @@ applyCorrection <- function(datetime, raw, correction) {
   }
   #Interpolate correction end points for each raw values
   if(length(correction@endOffsets) > 1) {
-    ec <- approx(x = correction@endValues, 
+    ec <- stats::approx(x = correction@endValues, 
                  y = correction@endOffsets, 
                  xout = raw,
                  yleft = correction@endOffsets[which.min(correction@endValues)],
@@ -254,8 +252,8 @@ applyDrift <- function(timeSeries, corrections) {
 #' Create a data frame of time series data with details on corrections
 #' 
 #' @param tsID the time series unique identifier
-#' @param startDate the start date of interest as a string in the form YYYY-MM-DD
-#' @param endDate the end date of interest as a string in the form YYYY-MM-DD
+#' @param start the start date of interest as a string in the form YYYY-MM-DD
+#' @param end the end date of interest as a string in the form YYYY-MM-DD
 #' 
 #' @return a data frame of time series data. The value of all fouling
 #' and drift corrections is shown for each point in the time series.
@@ -416,7 +414,7 @@ makeTable <- function(tsID, start, end, parm) {
   correctedData <- getCorrectedData(tsID, start, end)
   output <- output[output$datetime %in% correctedData$datetime,]
   #Give the data a grade
-  output <- na.omit(output)
+  output <- stats::na.omit()(output)
   grade <- wagnerGrade(parm, output$raw, output$sumPercent, output$sumNumeric)
   output$Grade <- grade
   return(output)
@@ -524,7 +522,7 @@ recordCompleteness <- function(datetimes, start = "auto", end = "auto", freq = "
 
 findGaps <- function(datetimes, gapTol = 120) {
   
-  diff <- (datetimes - lag(datetimes, 1)) %>%
+  diff <- (datetimes - dplyr::lag(datetimes, 1)) %>%
     as.numeric(units = "mins")
   diff[1] <- 0
   gap <- rep(FALSE, length(datetimes))

@@ -12,11 +12,14 @@
 #' and data range
 #' 
 #' @importFrom magrittr %>%
+#' @importFrom rlang :=
 #' 
 #' @export
 #' 
 
 getSingleTS <- function(tsID, start, end, name) {
+  
+  corrected <- ".dplyr.var"
   
   ts_data <- getCorrectedData(tsID, start, end) %>%
     dplyr::rename(!!name := corrected)
@@ -60,7 +63,7 @@ getSingleTSSplit <- function(tsID, start, end, name) {
     end <- as.character(end)
     chunks <- list()
     for(i in 1:length(start)) {
-      chunks[[i]] <- geSingleTS(tsID, c(start[i], end[i]), name)
+      chunks[[i]] <- getSingleTS(tsID, c(start[i], end[i]), name)
     }
     output_data <- chunks %>%
       purrr::reduce(rbind)
@@ -79,6 +82,7 @@ getSingleTSSplit <- function(tsID, start, end, name) {
 #' @param end the ending date of interest as a string in the form YYYY-MM-DD
 #' @param names the names to use for each series, corresponding to tsID
 #' @param time_zone the time zone to use for output
+#' @param interval the time series interval to use
 #' 
 #' @return a time series data frame with a separate column for each 
 #' time series requested. The time series label is used as the column heading.
@@ -90,6 +94,8 @@ getSingleTSSplit <- function(tsID, start, end, name) {
 
 getTimeSeries <- function(tsID, start, end, names, time_zone, 
                             interval = c("All", "Hourly", "30-minute", "15-minute", "5-minute")) {
+  
+  datetime <- ".dplyr.var"
   
   ts_list <- list()
   for(i in 1:length(tsID)) {

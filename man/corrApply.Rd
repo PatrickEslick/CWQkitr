@@ -9,9 +9,9 @@ corrApply(tsID, start, end)
 \arguments{
 \item{tsID}{the time series unique identifier}
 
-\item{startDate}{the start date of interest as a string in the form YYYY-MM-DD}
+\item{start}{the start date of interest as a string in the form YYYY-MM-DD}
 
-\item{endDate}{the end date of interest as a string in the form YYYY-MM-DD}
+\item{end}{the end date of interest as a string in the form YYYY-MM-DD}
 }
 \value{
 a data frame of time series data. The value of all fouling

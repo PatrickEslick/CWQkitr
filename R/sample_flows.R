@@ -94,6 +94,8 @@ getQGHT <- function(site, start, end, tz = "UTC") {
 
 closestQGHT <- function(sample_data, cont_data, maxDiff = 4) {
   
+  datetime.qw <- datetime.ts <- ".dplyr.var"
+  
   merged <- smwrBase::mergeNearest(sample_data, dates.left = "datetime", all.left = TRUE, suffix.left = "qw",
                          cont_data, dates.right = "datetime", suffix.right = "ts",
                          max.diff = paste(maxDiff, "hours")) %>%
@@ -124,11 +126,11 @@ intQGHT <- function(sample_data, cont_data, maxDiff = 4) {
   cont_vars <- names(cont_data)[names(cont_data) != "datetime"]
   for(i in cont_vars) {
     intData <- cont_data[,c("datetime",i)] %>%
-      na.omit()
+      stats::na.omit()
     intData$gap <- (dplyr::lead(intData$datetime) - intData$datetime) %>%
       as.numeric(units = "hours")
     if(class(intData[,i]) == "numeric") {
-      sd <- approx(
+      sd <- stats::approx(
         x = intData$datetime,
         y = intData[,i],
         xout = sample_data$datetime
@@ -140,7 +142,7 @@ intQGHT <- function(sample_data, cont_data, maxDiff = 4) {
         lvl = as.character(intData[,i])
       ) %>%
         unique()
-      sd <- approx(
+      sd <- stats::approx(
         x = intData$datetime,
         y = intData[,i],
         xout = sample_data$datetime
@@ -148,7 +150,7 @@ intQGHT <- function(sample_data, cont_data, maxDiff = 4) {
       sd <- factor(sd, levels = key$num, labels = key$lvl) %>%
         as.character()
     }    
-    sd_gap <- approx(
+    sd_gap <- stats::approx(
       x = intData$datetime,
       y = intData$gap,
       xout = sample_data$datetime,
