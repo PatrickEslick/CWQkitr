@@ -18,4 +18,6 @@ Imports: magrittr,
          shiny,
          smwrBase,
          methods,
-         rlang
+         rlang,
+         markdown,
+         shinydashboard
