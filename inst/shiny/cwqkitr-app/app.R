@@ -127,7 +127,11 @@ ui <- dashboardPage(
   )
 )
 
-server <- function(input, output) {
+server <- function(input, output, session) {
+  
+  session$onSessionEnded(function() {
+    stopApp()
+  })
   
   ##Corrections/Grades/Gaps########################################################################
   cgg_tsChoices <- reactive({
