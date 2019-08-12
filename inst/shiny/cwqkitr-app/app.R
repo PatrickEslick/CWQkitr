@@ -17,7 +17,11 @@ ui <- dashboardPage(
   dashboardBody(
     tabItems(
       tabItem(tabName = "information",
-        includeMarkdown("info.md")
+        fluidRow(
+          box( 
+            includeMarkdown("info.md")
+          , width = 8)
+        )
       ),
       tabItem(tabName = "corrections",
         fluidRow(
