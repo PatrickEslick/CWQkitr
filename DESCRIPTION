@@ -2,7 +2,7 @@ Package: CWQkitr
 Title: Tools For Reviewing Continuous Water Quality Data
 Version: 0.0.0.9000
 Authors@R: person("Patrick", "Eslick", email = "peslick@usgs.gov", role = c("aut", "cre"))
-Description: Provides tools for reviewing data corrections, assinging grades, reviewing approvals and working with time series data.
+Description: Provides tools for reviewing data corrections, assigning grades, reviewing approvals and working with time series data.
 Depends: R (>= 3.5)
 License: CC0
 Encoding: UTF-8
