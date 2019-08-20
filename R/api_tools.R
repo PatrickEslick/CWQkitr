@@ -83,7 +83,7 @@ retryToken <- function(id, pw) {
   tkn <- getToken(id, pw)
   i <- 0
   while(!(testToken()) & i < 5) {
-    Sys.sleep(1)
+    Sys.sleep(3)
     tkn <- getToken(id, pw)
     i <- i + 1
   }
