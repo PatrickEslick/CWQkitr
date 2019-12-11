@@ -73,7 +73,7 @@ ui <- dashboardPage(
       tabItem(tabName = "download",
         box(
           fluidRow(
-            column(2, textInput("dts_location", label = "Location", placeholder = "xxxxxxxx")),
+            column(2, textInput("dts_location", label = "Location, multiples separated by commas", placeholder = "xxxxxxxx,xxxxxxxx")),
             column(3, uiOutput("dts_dateRangeUI")),
             column(1, checkboxInput("dts_publish", label = "Publish", value = TRUE)),
             column(1, style = "margin-top: 25px;", actionButton("find_time_series", "Find time series"))
@@ -280,6 +280,23 @@ server <- function(input, output, session) {
     
   })
   
+  dts_location_split <- reactive({
+    
+    location <- input$dts_location
+    
+    if(is.null(location))
+      return(NULL)
+    
+    if(location == "") 
+      return("")
+    
+    location_split <- strsplit(location, "\\D")[[1]]
+    location_split <- location_split[location_split != ""]
+    
+    return(location_split)
+    
+  })
+  
   available_time_series <- reactive({
     
     tkn <- retryToken(id = Sys.getenv("apiid"), pw = Sys.getenv("apipw"))
@@ -287,24 +304,28 @@ server <- function(input, output, session) {
     input$find_time_series
     
     isolate({
-      location <- input$dts_location
+      locations <- dts_location_split()
       date_range <- as.character(input$dts_dateRange, format = "%Y-%m-%d")
       publish <- input$dts_publish
     })
     
-    if(location == "")
+    if(locations == "")
       return(NULL)
     
-    getAvailableTimeSeries(location, date_range[1], date_range[2], publish)
-    
+    ats <- data.frame()
+    for(i in locations) {
+      ats <- bind_rows(ats, getAvailableTimeSeries(i, date_range[1], date_range[2], publish))
+    }
+    return(ats)
   })
   
   output$timeSeriesChoices <- renderUI({
     
     ts <- available_time_series()
+    print(ts)
     if(!is.null(ts)) {
       ch <- ts$UniqueId
-      names(ch) <- paste(ts$Parameter, ts$Label)
+      names(ch) <- paste(ts$Parameter, ts$Label, ts$LocationIdentifier)
     } else {
       showNotification("No time series found", type = "error")
       ch <- NULL
