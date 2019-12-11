@@ -205,7 +205,7 @@ getSampleQ <- function(site, start, end, maxDiff = 4,
   } else if (method == "interpolate") {
     sampleQ <- intQGHT(samples, qght, maxDiff = maxDiff)
   }
-  sampleQ$datetime <- as.character(sampleQ$datetime, format="%Y-%m-%d %H:%M %Z")
+  sampleQ$datetime <- as.character(sampleQ$datetime, format="%Y-%m-%d %H:%M %Z", tz = tz)
   return(sampleQ)
   
 }
