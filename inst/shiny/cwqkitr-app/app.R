@@ -73,7 +73,7 @@ ui <- dashboardPage(
       tabItem(tabName = "download",
         box(
           fluidRow(
-            column(2, textInput("dts_location", label = "Location, multiples separated by commas", placeholder = "xxxxxxxx,xxxxxxxx")),
+            column(4, textInput("dts_location", label = "Location, multiples separated by commas", placeholder = "xxxxxxxx,xxxxxxxx")),
             column(3, uiOutput("dts_dateRangeUI")),
             column(1, checkboxInput("dts_publish", label = "Publish", value = TRUE)),
             column(1, style = "margin-top: 25px;", actionButton("find_time_series", "Find time series"))
